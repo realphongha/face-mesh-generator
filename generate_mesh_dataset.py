@@ -328,8 +328,8 @@ if __name__ == "__main__":
     lfpw_dir = "/home/robin/data/facial-marks/lfpw"
     wflw_dir = "/home/robin/data/facial-marks/wflw/WFLW_images"
     aflw2000_3d_dir = "/home/robin/data/facial-marks/3DDFA/AFLW2000-3D"
-    # ds300wlp_dir = "/content/data/300W_LP"
-    ds300wlp_dir = r"E:\Workspace\data\face-direction\300W_LP"
+    ds300wlp_dir = "/content/data/300W_LP"
+    # ds300wlp_dir = r"E:\Workspace\data\face-direction\300W_LP"
 
     # Construct the datasets.
 

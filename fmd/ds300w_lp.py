@@ -19,10 +19,10 @@ class DS300W_LP(MarkDataset):
         # 1. populate the image file list.
         lg = FileListGenerator()
         self.image_files = lg.generate_list(image_dir)
-        print(self.image_files)
+        # print(self.image_files)
         new_image_files = []
         for img in self.image_files:
-            if img[-5] == '0':
+            if img[-6:-4] == "_0":
                 new_image_files.append(img)
         self.image_files = new_image_files
 
