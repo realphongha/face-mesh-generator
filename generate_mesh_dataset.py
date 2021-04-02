@@ -52,18 +52,22 @@ def setup_logger():
 logger = setup_logger()
 
 
-def process(dataset, index_start_from=0):
+def process(dataset, export_dir, is_split=(6, 2, 2), index_start_from=0):
     """Process the dataset as required, including rotating the face, crop the
     face area.
 
     Args:
         dataset: a MarkDataset object.
-        start_from: the sample index to start from. Samples before this will be
+        export_dir: place to export processed images and labels
+        is_split: split ratio
+        index_start_from: the sample index to start from. Samples before this will be
         skipped.
 
     Returns:
         None
     """
+    if is_split:
+        assert sum(is_split) == 10, "Sum of three split partitions must be equal to 10"
     logger.info("Starting to process dataset: {}".format(dataset.meta['name']))
 
     # Keep a record of the current location.
@@ -87,6 +91,8 @@ def process(dataset, index_start_from=0):
     # from the start.
     try:
         # Enumerate all the samples in dataset.
+        i = 0
+
         for sample in tqdm(dataset):
             # In case the job is interrupted, we can start from somwhere in
             # between rather than starting over from the very begining.
@@ -133,18 +139,32 @@ def process(dataset, index_start_from=0):
                     break
 
             # Now the cropped face and marks are available, do whatever you want.
-
-            # Save the processed image and new marks to files.
-            export_dir = "/content/data/300W_LP_processed"
-
+            if is_split:
+                if len(is_split) == 3:
+                    if i % 10 in range(is_split[0]):
+                        final_export_dir = os.path.join(export_dir, "train")
+                    elif i % 10 in range(is_split[0], is_split[0]+is_split[1]):
+                        final_export_dir = os.path.join(export_dir, "val")
+                    else:
+                        final_export_dir = os.path.join(export_dir, "test")
+                elif len(is_split) == 2:
+                    if i % 10 in range(is_split[0]):
+                        final_export_dir = os.path.join(export_dir, "train")
+                    else:
+                        final_export_dir = os.path.join(export_dir, "test")
+                else:
+                    print("Must be split into 2 or 3 partitions!")
+                    quit()
+            else:
+                final_export_dir = export_dir
             img_file = os.path.join(
-                export_dir, "{}_{}".format(current_sample_index, os.path.basename(sample.image_file)))
+                final_export_dir, "{}_{}".format(current_sample_index, os.path.basename(sample.image_file)))
             mark_file = img_file.split(".")[-2] + ".json"
 
             cv2.imwrite(img_file, image_resized)
             sample.marks = mark_resized
             sample.save_mark_to_json(mark_file)
-
+            i += 1
     except Exception:
         logger.error(
             "Error {}. sample index: {}".format(traceback.format_exc(), current_sample_index))
@@ -308,7 +328,8 @@ if __name__ == "__main__":
     lfpw_dir = "/home/robin/data/facial-marks/lfpw"
     wflw_dir = "/home/robin/data/facial-marks/wflw/WFLW_images"
     aflw2000_3d_dir = "/home/robin/data/facial-marks/3DDFA/AFLW2000-3D"
-    ds300wlp_dir = "/content/data/300W_LP"
+    # ds300wlp_dir = "/content/data/300W_LP"
+    ds300wlp_dir = r"E:\Workspace\data\face-direction\300W_LP"
 
     # Construct the datasets.
 
@@ -348,7 +369,7 @@ if __name__ == "__main__":
     # 300W-LP
     ds_300lp = fmd.DS300W_LP("300W_LP")
     ds_300lp.populate_dataset(ds300wlp_dir)
-    process(ds_300lp)
+    process(ds_300lp, "/content/data/300W_LP_processed")
 
     # datasets = [ds_300vw, ds_300w, ds_aflw2k3d,
     #             ds_afw, ds_helen, ds_ibug, ds_lfpw, ds_wflw]

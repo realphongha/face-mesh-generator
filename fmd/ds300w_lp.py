@@ -19,6 +19,12 @@ class DS300W_LP(MarkDataset):
         # 1. populate the image file list.
         lg = FileListGenerator()
         self.image_files = lg.generate_list(image_dir)
+        print(self.image_files)
+        new_image_files = []
+        for img in self.image_files:
+            if img[-5] == '0':
+                new_image_files.append(img)
+        self.image_files = new_image_files
 
         # 2. Populate the mark file list. Note the order should be same with the
         # image file list. Since the 300W_LP dataset had the mark file named
