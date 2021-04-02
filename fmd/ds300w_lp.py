@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 from scipy.io import loadmat
 
-from mark_dataset.dataset import MarkDataset
-from mark_dataset.util import FileListGenerator
+from .mark_dataset.dataset import MarkDataset
+from .mark_dataset.util import FileListGenerator
 
 
 class DS300W_LP(MarkDataset):

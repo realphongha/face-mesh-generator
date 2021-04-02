@@ -135,7 +135,7 @@ def process(dataset, index_start_from=0):
             # Now the cropped face and marks are available, do whatever you want.
 
             # Save the processed image and new marks to files.
-            export_dir = "/home/robin/data/facial-marks/wflw_cropped"
+            export_dir = "/content/data/300W_LP_processed"
 
             img_file = os.path.join(
                 export_dir, "{}_{}".format(current_sample_index, os.path.basename(sample.image_file)))
@@ -308,6 +308,7 @@ if __name__ == "__main__":
     lfpw_dir = "/home/robin/data/facial-marks/lfpw"
     wflw_dir = "/home/robin/data/facial-marks/wflw/WFLW_images"
     aflw2000_3d_dir = "/home/robin/data/facial-marks/3DDFA/AFLW2000-3D"
+    ds300wlp_dir = "/content/data/300W_LP"
 
     # Construct the datasets.
 
@@ -336,13 +337,18 @@ if __name__ == "__main__":
     # ds_lfpw.populate_dataset(lfpw_dir)
 
     # WFLW
-    ds_wflw = fmd.wflw.WFLW(True, "wflw_train")
-    ds_wflw.populate_dataset(wflw_dir)
-    process(ds_wflw)
+    # ds_wflw = fmd.wflw.WFLW(True, "wflw_train")
+    # ds_wflw.populate_dataset(wflw_dir)
+    # process(ds_wflw)
 
     # # AFLW2000-3D
     # ds_aflw2k3d = fmd.AFLW2000_3D("AFLW2000_3D")
     # ds_aflw2k3d.populate_dataset(aflw2000_3d_dir)
+
+    # 300W-LP
+    ds_300lp = fmd.DS300W_LP("300W_LP")
+    ds_300lp.populate_dataset(ds300wlp_dir)
+    process(ds_300lp)
 
     # datasets = [ds_300vw, ds_300w, ds_aflw2k3d,
     #             ds_afw, ds_helen, ds_ibug, ds_lfpw, ds_wflw]
